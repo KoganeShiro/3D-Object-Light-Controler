@@ -45,6 +45,39 @@ if (WebGL.isWebGL2Available()) {
 	scene.add(dl);
 	scene.add(dlHelper);
 
+
+	// Keyboard Controls
+	let angleX = 0;
+	let angleY = Math.PI / 2;
+
+	function updateLightPosition() {
+		dl.position.x = 5 * Math.sin(angleX) * Math.cos(angleY);
+		dl.position.z = 5 * Math.cos(angleX) * Math.cos(angleY);
+		dl.position.y = 5 * Math.sin(angleY);
+		dlHelper.update();
+	}
+
+	window.addEventListener('keydown', (event) => {
+		const step = 0.01;
+		switch (event.key) {
+			case 'ArrowUp':
+				angleY += step;
+				break;
+			case 'ArrowDown':
+				angleY -= step;
+				break;
+			case 'ArrowLeft':
+				angleX -= step;
+				break;
+			case 'ArrowRight':
+				angleX += step;
+				break;
+		}
+		updateLightPosition();
+	});
+
+
+
 	//GUI
 	const gui = new GUI();
 
@@ -63,7 +96,22 @@ if (WebGL.isWebGL2Available()) {
 	cubeFolder.add(params, 'roughness', 0, 1).onChange(value => {
 		cube.material.roughness = value;
 	});
-	cubeFolder.open();
+	cubeFolder.close();
+
+	// const lightFolder = gui.addFolder('Light Position');
+    //     const lightParams = {
+    //         x: dl.position.x,
+    //         y: dl.position.y,
+    //     };
+    //     lightFolder.add(lightParams, 'x', -100, 100).onChange(value => {
+    //         dl.position.x = value;
+    //         dlHelper.update();
+    //     });
+    //     lightFolder.add(lightParams, 'y', -100, 100).onChange(value => {
+    //         dl.position.y = value;
+    //         dlHelper.update();
+    //     });
+    //     lightFolder.open();
 
 	const alFolder = gui.addFolder('Ambient Light');
 	const alSettings = { color: al.color.getHex() };
@@ -72,7 +120,7 @@ if (WebGL.isWebGL2Available()) {
 	alFolder
 		.addColor(alSettings, 'color')
 		.onChange((value) => al.color.set(value));
-	alFolder.open();
+	alFolder.close();
 
 	const dlSettings = {
 		visible: true,
@@ -84,7 +132,6 @@ if (WebGL.isWebGL2Available()) {
 		dlHelper.visible = value;
 	});
 	dlFolder.add(dl, 'intensity', 0, 1, 0.25);
-	dlFolder.add(dl, 'castShadow');
 	dlFolder
 		.addColor(dlSettings, 'color')
 		.onChange((value) => dl.color.set(value));
@@ -95,6 +142,7 @@ if (WebGL.isWebGL2Available()) {
 
 	
 	function animate() {
+		updateLightPosition();
 		controls.update();
 		renderer.render(scene, camera);
 	}
