@@ -1,0 +1,31 @@
+{
+  "name": "cube-lighting-ref",
+  "version": "1.0.0",
+  "description": "A way to control the light on a 3D object, showing the shadow of it. You can then turn around the object to see how the light and shadow go.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "gh-pages -d dist"
+  },
+  "devDependencies": {
+    "vite": "^5.3.4"
+  },
+  "dependencies": {
+    "gh-pages": "^6.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/KoganeShiro/3D-Object-Light-Controler.git"
+  },
+  "keywords": [
+    "light",
+    "controler",
+    "3d"
+  ],
+  "author": "KShiro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KoganeShiro/3D-Object-Light-Controler/issues"
+  },
+  "homepage": "https://github.com/KoganeShiro/3D-Object-Light-Controler#readme"
+}
