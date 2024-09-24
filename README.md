@@ -20,7 +20,7 @@ You will be able to import object and change the color, the intensity of the lig
 -->
 
 ## Quick Start
-You can view the website [here](https://koganeshiro.github.io/3D-Object-Light-Controler/)
+You can view the website [here](https://koganeshiro.github.io/3D-Object-Light-Controler/dist)
 
 or
 
