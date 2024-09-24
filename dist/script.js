@@ -18,15 +18,61 @@ camera.position.set(0, 1, 5);
 	const groundMaterial = new THREE.MeshPhongMaterial({ color: 0xfafafa });
 	const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
 	groundMesh.receiveShadow = true;
-	groundMesh.position.y = -1;
+	groundMesh.position.y = -2;
 	scene.add(groundMesh);
 
 	const geometry = new THREE.BoxGeometry(1, 1, 1);
 	const material = new THREE.MeshStandardMaterial({ color: 0xd3d3d3 });
-	const cube = new THREE.Mesh(geometry, material);
-	cube.castShadow = true;
-	cube.receiveShadow = true;
-	scene.add(cube);
+	let oldMesh = new THREE.Mesh(geometry, material);
+	oldMesh.castShadow = true;
+	oldMesh.receiveShadow = true;
+	scene.add(oldMesh);
+
+	let currentMesh = 'cube';
+	function updateMesh(selectedMesh) {
+		if (selectedMesh === currentMesh)
+			return;
+		let newGeometry;
+		switch (selectedMesh) {
+			case 'cube':
+				newGeometry = new THREE.BoxGeometry();
+				break;
+			case 'sphere':
+				newGeometry = new THREE.SphereGeometry(1, 32, 32);
+				break;
+			case 'cylinder':
+				newGeometry = new THREE.CylinderGeometry(1, 1, 2, 32);
+				break;
+			case 'cone':
+				newGeometry = new THREE.ConeGeometry(1, 2, 32);
+				break;
+			case 'torus':
+				newGeometry = new THREE.TorusGeometry(1, 0.4, 16, 100);
+				break;
+			case 'dodecahedron':
+				newGeometry = new THREE.DodecahedronGeometry(1);
+				break;
+			case 'icosahedron':
+				newGeometry = new THREE.IcosahedronGeometry(1);
+				break;
+		}
+		if (newGeometry) {
+			console.log('old mesh', oldMesh);
+			scene.remove(oldMesh);
+			oldMesh.geometry.dispose();
+			oldMesh.material.dispose();
+			oldMesh = undefined;
+			let newMesh = new THREE.Mesh(newGeometry, material);
+			newMesh.castShadow = true;
+			newMesh.receiveShadow = true;
+
+			console.log(newMesh);
+
+			scene.add(newMesh);
+			oldMesh = newMesh;
+		}
+	}
+
 
 	// LIGHTING
 	const al = new THREE.AmbientLight(0xffffff, 0.5);
@@ -72,12 +118,32 @@ camera.position.set(0, 1, 5);
 	// GUI
 	const gui = new dat.GUI(); 
 
-	const cubeFolder = gui.addFolder('Cube Material');
-	const params = { color: 0xd3d3d3, metalness: 0.5, roughness: 0.5 };
-	cubeFolder.addColor(params, 'color').onChange(value => { cube.material.color.set(value); });
-	cubeFolder.add(params, 'metalness', 0, 1).onChange(value => { cube.material.metalness = value; });
-	cubeFolder.add(params, 'roughness', 0, 1).onChange(value => { cube.material.roughness = value; });
-	cubeFolder.close();
+	//mesh list: cube, sphere, cynlider, cone, torus,
+			// Dodecahedro, Icosahedron, Polyhedro
+
+	const meshFolder = gui.addFolder('Which Mesh ?');
+	//implement import blender file
+	const meshOption = {mesh: 'cube'};
+	meshFolder.add(meshOption, 'mesh', ['cube', 'sphere', 'cylinder', 'cone', 'torus', 'dodecahedron', 'icosahedron']).onChange(updateMesh);
+	updateMesh(meshOption);
+	meshFolder.open();
+
+	const meshMaterialFolder = gui.addFolder('Mesh Material');
+	const params = {
+		color: 0xd3d3d3,
+		metalness: 0.5,
+		roughness: 0.5
+	};
+	meshMaterialFolder.addColor(params, 'color').onChange(value => {
+		cube.material.color.set(value);
+	});
+	meshMaterialFolder.add(params, 'metalness', 0, 1).onChange(value => {
+		cube.material.metalness = value;
+	});
+	meshMaterialFolder.add(params, 'roughness', 0, 1).onChange(value => {
+		cube.material.roughness = value;
+	});
+	meshMaterialFolder.close();
 
 	const alFolder = gui.addFolder('Ambient Light');
 	const alSettings = { color: al.color.getHex() };
